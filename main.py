@@ -1,63 +1,81 @@
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.button import Button
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.scrollview import ScrollView
-from kivy.properties import StringProperty
+from kivy.lang import Builder
+from kivy.properties import StringProperty, NumericProperty
+
 
 class StartScreen(Screen):
-    def next_screen(self):
-        km = self.ids.km_input.text.strip()
-        if km:
-            self.manager.get_screen("count").km = km
+    def next(self):
+        name = self.ids.structure_name.text.strip()
+        if name:
+            self.manager.structure_name = name
             self.manager.current = "count"
 
+
 class CountScreen(Screen):
-    km = StringProperty()
-    per = StringProperty()
-
-    def create_buttons(self):
+    def next(self):
         try:
-            supports = int(self.ids.supports_input.text)
-            spans = int(self.ids.spans_input.text)
+            self.manager.path_count = int(self.ids.path_count.text)
+            self.manager.support_count = int(self.ids.support_count.text)
+            self.manager.span_count = int(self.ids.span_count.text)
+            self.manager.current = "navigation"
         except ValueError:
-            return
+            pass
 
-        photo_screen = self.manager.get_screen("photo")
-        photo_screen.build_buttons(supports, spans)
-        photo_screen.km = self.km
-        photo_screen.per = self.per
-        self.manager.current = "photo"
 
-class PhotoScreen(Screen):
-    km = StringProperty()
-    per = StringProperty()
+class NavigationScreen(Screen):
+    title = StringProperty("")  # ← Добавили свойство для безопасного отображения названия
 
-    def build_buttons(self, supports, spans):
-        layout = BoxLayout(orientation='vertical', size_hint_y=None, spacing=10)
-        layout.bind(minimum_height=layout.setter('height'))
+    def on_pre_enter(self):
+        # Обновляем заголовок, когда экран активируется
+        self.title = f"Структура сооружения: {self.manager.structure_name}"
 
-        for i in range(1, supports + 1):
-            layout.add_widget(Button(text=f"Опора №{i}", size_hint_y=None, height=60, on_release=self.take_photo))
-        for i in range(1, spans + 1):
-            layout.add_widget(Button(text=f"Пролёт №{i}", size_hint_y=None, height=60, on_release=self.take_photo))
+        layout = self.ids.sections
+        layout.clear_widgets()
 
-        scroll = ScrollView(size_hint=(1, 1))
-        scroll.add_widget(layout)
-        self.ids.container.clear_widgets()
-        self.ids.container.add_widget(scroll)
+        from kivy.uix.button import Button
+        from kivy.uix.label import Label
+        from kivy.uix.boxlayout import BoxLayout
+        from kivy.uix.scrollview import ScrollView
 
-    def take_photo(self, btn): 
-        print(f"Сделано фото: {btn.text}")
+        sections = [
+            ("Мостовое полотно", self.manager.path_count),
+            ("Опоры", self.manager.support_count),
+            ("Пролётные строения", self.manager.span_count)
+        ]
+
+        for section_name, count in sections:
+            layout.add_widget(Label(text=section_name, font_size=20, size_hint_y=None, height=40))
+
+            scroll = ScrollView(size_hint=(1, None), height=150)
+            box = BoxLayout(orientation='vertical', size_hint_y=None, spacing=5)
+            box.bind(minimum_height=box.setter('height'))
+
+            for i in range(1, count + 1):
+                btn = Button(
+                    text=f"{section_name} {i}",
+                    size_hint_y=None,
+                    height=50,
+                    background_normal='',
+                    background_color=(0.2, 0.6, 0.9, 1),
+                )
+                box.add_widget(btn)
+            scroll.add_widget(box)
+            layout.add_widget(scroll)
+
+
+class BridgeManager(ScreenManager):
+    structure_name = StringProperty("")
+    path_count = NumericProperty(0)
+    support_count = NumericProperty(0)
+    span_count = NumericProperty(0)
+
 
 class BridgeApp(App):
     def build(self):
-        sm = ScreenManager()
-        sm.add_widget(StartScreen(name="start"))
-        sm.add_widget(CountScreen(name="count"))
-        sm.add_widget(PhotoScreen(name="photo"))
-        return sm
+        Builder.load_file("bridge.kv")
+        return BridgeManager()
+
 
 if __name__ == "__main__":
     BridgeApp().run()
-

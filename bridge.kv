@@ -1,55 +1,117 @@
 <StartScreen>:
+    name: "start"
     BoxLayout:
         orientation: "vertical"
-        padding: 20
-        spacing: 10
+        padding: 30
+        spacing: 15
+
         Label:
-            text: "Введите данные сооружения"
+            text: "Введите название сооружения"
+            font_size: 20
+            size_hint_y: None
+            height: 40
+
         TextInput:
-            id: km_input
-            hint_text: "Километр"
-        TextInput:
-            id: per_input
-            hint_text: "Перегон"
+            id: structure_name
+            hint_text: "Например: Перегон №12, км 34+56"
+            multiline: False
+            size_hint_y: None
+            height: 50
+
         Button:
             text: "Далее"
-            background_color: (0,1,0,1)
-            on_release: root.next_screen()
+            size_hint_y: None
+            height: 60
+            background_color: (0, 0.7, 0.3, 1)
+            on_press: root.next()
+
 
 <CountScreen>:
+    name: "count"
     BoxLayout:
         orientation: "vertical"
-        padding: 20
-        spacing: 10
-        Label:
-            text: "Введите количество опор и пролётов"
-        TextInput:
-            id: supports_input
-            hint_text: "Количество опор"
-            input_filter: "int"
-        TextInput:
-            id: spans_input
-            hint_text: "Количество пролётов"
-            input_filter: "int"
-        Button:
-            text: "Создать кнопки"
-            background_color: (0,1,0,1)
-            on_release: root.create_buttons()
+        padding: 30
+        spacing: 15
 
-<PhotoScreen>:
+        Label:
+            text: "Введите параметры сооружения"
+            font_size: 20
+            size_hint_y: None
+            height: 40
+
+        TextInput:
+            id: path_count
+            hint_text: "Количество путей"
+            multiline: False
+            input_filter: "int"
+            size_hint_y: None
+            height: 50
+
+        TextInput:
+            id: support_count
+            hint_text: "Количество опор"
+            multiline: False
+            input_filter: "int"
+            size_hint_y: None
+            height: 50
+
+        TextInput:
+            id: span_count
+            hint_text: "Количество пролётов"
+            multiline: False
+            input_filter: "int"
+            size_hint_y: None
+            height: 50
+
+        Button:
+            text: "Создать структуру"
+            size_hint_y: None
+            height: 60
+            background_color: (0, 0.7, 0.3, 1)
+            on_press: root.next()
+
+        Button:
+            text: "Назад"
+            size_hint_y: None
+            height: 50
+            background_color: (0.6, 0.6, 0.6, 1)
+            on_press: app.root.current = "start"
+
+
+<NavigationScreen>:
+    name: "navigation"
     BoxLayout:
         orientation: "vertical"
         padding: 10
         spacing: 10
-        BoxLayout:
+
+        Label:
+            text: root.title
+            font_size: 18
             size_hint_y: None
-            height: 50
-            Button:
-                text: "Добавить элемент"
-                on_release: print("Добавлен новый элемент")
-            Button:
-                text: "Завершить"
-                background_color: (0,1,0,1)
-                on_release: print("Архивация фото")
-        BoxLayout:
-            id: container
+            height: 40
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+
+            BoxLayout:
+                id: sections
+                orientation: "vertical"
+                size_hint_y: None
+                spacing: 15
+                padding: 5
+                height: self.minimum_height
+
+        Button:
+            text: "Назад"
+            size_hint_y: None
+            height: 60
+            background_color: (0.6, 0.6, 0.6, 1)
+            on_press: app.root.current = "count"
+
+
+<BridgeManager>:
+    StartScreen:
+    CountScreen:
+    NavigationScreen:
