@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+.venv/
+ENV/
+env/
+
+# Buildozer
+.buildozer/
+bin/
+buildozer.spec.backup
+*.apk
+*.aab
+
+# Kivy logs and temp files
+*.log
+*.pyo
+*.pyd
+.kivy/
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
+.history/
+
+# Android / Gradle
+.gradle/
+local.properties
+*.iml
+.idea/
+
+# Misc
+*.zip
+*.tar
+*.tar.gz

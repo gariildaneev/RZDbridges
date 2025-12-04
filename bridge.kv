@@ -75,7 +75,7 @@
             size_hint_y: None
             height: 50
             background_color: (0.6, 0.6, 0.6, 1)
-            on_press: app.root.current = "start"
+            on_press: root.back()
 
 
 <NavigationScreen>:
@@ -103,12 +103,67 @@
                 padding: 5
                 height: self.minimum_height
 
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            spacing: 10
+
+            Button:
+                text: "Назад"
+                background_color: (0.6, 0.6, 0.6, 1)
+                on_press: root.back()
+
+            Button:
+                text: "Экспортировать отчёт (ZIP)"
+                background_color: (0, 0.7, 0.3, 1)
+                on_press:
+                    from kivy.app import App
+                    app = App.get_running_app()
+                    root.status_message = app.export_zip()
+
+        Label:
+            text: root.status_message
+            font_size: 14
+            size_hint_y: None
+            height: 40
+            halign: "left"
+            valign: "middle"
+            text_size: self.size
+
+
+<ElementScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 15
+
+        Label:
+            id: title_label
+            text: ""
+            font_size: 22
+            size_hint_y: None
+            height: 40
+
+        Label:
+            id: photo_counter
+            text: "Фотографий: 0"
+            font_size: 16
+            size_hint_y: None
+            height: 30
+
+        Button:
+            text: "Добавить фото"
+            size_hint_y: None
+            height: 60
+            background_color: (0, 0.7, 0.3, 1)
+            on_press: root.add_photo()
+
         Button:
             text: "Назад"
             size_hint_y: None
             height: 60
             background_color: (0.6, 0.6, 0.6, 1)
-            on_press: app.root.current = "count"
+            on_press: root.back()
 
 
 <BridgeManager>:

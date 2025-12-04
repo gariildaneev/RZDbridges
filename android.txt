@@ -1,0 +1,3 @@
+title=RZD Bridges
+author=Daniil Gareev
+orientation=portrait
